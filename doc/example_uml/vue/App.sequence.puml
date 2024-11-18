@@ -1,0 +1,79 @@
+@startuml
+actor ユーザー
+participant App as "Appコンポーネント"
+participant Ticket as "Ticketコンポーネント"
+participant TicketDetailModal as "TicketDetailModalコンポーネント"
+participant DarkModeToggle as "DarkModeToggleコンポーネント"
+participant API as "APIサービス"
+
+== コンポーネントのマウント ==
+ユーザー -> App : コンポーネントを表示
+activate App
+App -> API : チケットデータ取得 (fetchTickets)
+API --> App : チケットデータ (TicketData[])
+App -> App : setTickets()
+deactivate App
+note right of App : 初期化処理が完了
+
+== ユーザーイベント: チケット作成ボタン押下 ==
+ユーザー -> App : チケット作成ボタンを押下
+activate App
+App -> App : isCreating = true
+deactivate App
+
+== チケット作成フォームの表示 ==
+ユーザー -> App : フォームに入力
+activate App
+App -> App : handleCreate()が呼び出される
+note right of App : 入力内容を検証
+alt 入力内容が有効
+  App -> API : チケット作成 (createTicket)
+  API --> App : 作成されたチケット (TicketData)
+  App -> App : setNewTicket()
+else 入力内容が無効
+  App -> App : error = 'タイトルと説明を入力してください。'
+end
+deactivate App
+
+== ユーザーイベント: ステータス変更 ==
+ユーザー -> Ticket : ステータス変更ボタンを押下
+activate Ticket
+Ticket -> App : handleStatusChange(id, status)
+activate App
+App -> API : ステータス更新 (updateTicketStatus)
+API --> App : 更新成功
+App -> App : チケットのステータスを更新
+deactivate App
+deactivate Ticket
+
+== ユーザーイベント: チケット削除 ==
+ユーザー -> Ticket : 削除ボタンを押下
+activate Ticket
+Ticket -> App : handleDelete(id)
+activate App
+App -> API : チケット削除 (deleteTicket)
+API --> App : 削除成功
+App -> App : チケットリストから削除
+deactivate App
+deactivate Ticket
+
+== ユーザーイベント: ダークモード切り替え ==
+ユーザー -> DarkModeToggle : ダークモード切り替え
+activate DarkModeToggle
+DarkModeToggle -> App : toggleDarkMode()
+activate App
+App -> App : isDarkModeをトグル
+deactivate App
+deactivate DarkModeToggle
+
+== チケット一覧の表示 ==
+ユーザー -> App : チケット一覧を表示
+activate App
+App -> App : filteredTicketsを計算
+deactivate App
+
+== コンポーネントのアンマウント ==
+ユーザー -> App : コンポーネントを閉じる
+activate App
+deactivate App
+@enduml

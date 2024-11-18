@@ -1,0 +1,46 @@
+@startuml
+[*] --> Setup_Component : コンポーネントマウント
+
+state Setup_Component {
+  [*] --> Initialize : setup関数でのデータ取得
+  Initialize --> Fetch_Tickets : チケットデータ取得
+  Fetch_Tickets --> Set_Tickets : ticketsでデータ設定
+  
+  note right of Fetch_Tickets
+    非同期処理: API呼び出し
+  end note
+
+  Set_Tickets --> [*]
+}
+
+Setup_Component --> Render_Component : レンダリング処理
+
+state Render_Component {
+  [*] --> Display : TODOアプリ表示
+  Display --> Error_Message : エラーメッセージ表示
+
+  Error_Message --> Ticket_Creation_Form : チケット作成フォーム表示
+  Ticket_Creation_Form --> Event_Handler : ボタン操作待機
+  note right of Event_Handler
+    onClick、onChange イベント処理
+  end note
+
+  Event_Handler --> Create_Ticket : 「作成」ボタン押下
+  Create_Ticket --> [*] : チケット作成処理完了
+
+  Event_Handler --> Cancel_Ticket : 「キャンセル」ボタン押下
+  Cancel_Ticket --> [*] : チケット作成キャンセル
+
+  Event_Handler --> Filter_Search : フィルターと検索操作
+  Filter_Search --> [*] : フィルター適用
+
+  Event_Handler --> Ticket_List : チケット一覧表示
+  Ticket_List --> Ticket_Detail : チケット詳細モーダル表示
+  Ticket_Detail --> [*] : モーダルクローズ
+}
+
+Render_Component --> Teardown_Component : アンマウント処理
+
+state Teardown_Component {
+}
+@enduml

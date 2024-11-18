@@ -1,0 +1,50 @@
+@startuml
+|App|
+start
+:コンポーネントマウント;
+:APIからチケットデータを取得 (非同期);
+:データ取得完了;
+:チケットデータをセット;
+
+group チケットデータのフィルタリング
+  :filteredTicketsを計算;
+end group
+
+group イベントハンドラ
+  :@clickイベントを処理 (チケット作成ボタン);
+  if (isCreatingがtrue) then (true)
+    :チケット作成フォームを表示;
+    while (フォームの各フィールドに対して)
+      :@clickイベントを処理 (作成ボタン);
+      if (タイトルと説明が入力されているか) then (true)
+        :チケットを作成 (非同期);
+        :新しいチケットをリストに追加;
+      else (false)
+        :エラーメッセージを表示;
+      endif
+    endwhile
+  else (false)
+    :チケット作成フォームを非表示;
+  endif
+
+  :@changeイベントを処理 (フィルター);
+  :filterStatusとfilterPriorityを更新;
+
+  while (各チケットに対して)
+    :@statusChangeイベントを処理;
+    :ステータスを更新 (非同期);
+    :チケットの更新日時をセット;
+  endwhile
+
+  while (各チケットに対して)
+    :@deleteTicketイベントを処理;
+    :チケットを削除 (非同期);
+  endwhile
+
+  :@selectTicketイベントを処理;
+  :選択されたチケットをセット;
+end group
+
+:コンポーネントの再レンダリング;
+stop
+@enduml

@@ -1,0 +1,57 @@
+@startuml
+[*] --> App_Mount : コンポーネントマウント
+
+state App_Mount {
+  [*] --> Initialize : useEffectでのデータ取得
+  Initialize --> Fetch_Tickets : チケットデータ取得
+  Fetch_Tickets --> Set_Tickets : setTicketsでデータ設定
+  
+  note right of Fetch_Tickets
+    非同期処理: fetchTickets呼び出し
+  end note
+
+  Set_Tickets --> [*]
+}
+
+App_Mount --> App_Render : レンダリング処理
+
+state App_Render {
+  [*] --> Display : チケット一覧表示
+  Display --> Filter_Conditions : フィルター条件表示
+
+  Filter_Conditions --> Event_Handler : ボタン操作待機
+  note right of Event_Handler
+    onClick、onChange イベント処理
+  end note
+
+  Event_Handler --> Create_Ticket : 「チケット作成」ボタン押下
+  Create_Ticket --> Validate_Ticket : 入力内容検証
+  Validate_Ticket --> Handle_Create : チケット作成処理
+  Handle_Create --> Set_Tickets : 新しいチケットを追加
+  note right of Handle_Create
+    非同期処理: createTicket呼び出し
+  end note
+  Set_Tickets --> [*] : 作成処理完了
+
+  Event_Handler --> Update_Status : ステータス変更ボタン押下
+  Update_Status --> Handle_Status_Change : ステータス変更処理
+  Handle_Status_Change --> Set_Tickets : ステータス更新
+  note right of Handle_Status_Change
+    非同期処理: updateTicketStatus呼び出し
+  end note
+  Set_Tickets --> [*] : 更新処理完了
+
+  Event_Handler --> Delete_Ticket : 削除ボタン押下
+  Delete_Ticket --> Handle_Delete : チケット削除処理
+  Handle_Delete --> Set_Tickets : チケット削除
+  note right of Handle_Delete
+    非同期処理: deleteTicket呼び出し
+  end note
+  Set_Tickets --> [*] : 削除処理完了
+}
+
+App_Render --> App_Unmount : アンマウント処理
+
+state App_Unmount {
+}
+@enduml

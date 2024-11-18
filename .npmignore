@@ -1,0 +1,9 @@
+src/
+tsconfig.json
+.git
+.gitignore
+node_modules/ 
+.env
+.DS_Store
+.github/
+.vscode/

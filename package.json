@@ -1,0 +1,48 @@
+{
+  "name": "uml-document-generator",
+  "version": "0.0.3",
+  "description": "TypeScriptファイルからPlantUMLとドキュメントを生成するCLIツール",
+  "main": "dist/index.js",
+  "bin": {
+    "uml-document-generator": "./dist/index.js"
+  },
+  "preferGlobal": true,
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "typescript",
+    "plantuml",
+    "documentation",
+    "cli",
+    "LLM",
+    "React",
+    "Vue",
+    "uml"
+  ],
+  "files": [
+    "dist",
+    "README.md",
+    "doc/"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Hayato Ito",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1",
+    "cli-progress": "^3.12.0",
+    "commander": "^11.1.0",
+    "dotenv": "^16.4.5",
+    "ollama": "^0.5.10",
+    "openai": "^4.72.0"
+  },
+  "devDependencies": {
+    "@types/cli-progress": "^3.11.6",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}

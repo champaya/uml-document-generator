@@ -1,0 +1,51 @@
+@startuml
+|App|
+start
+:コンポーネントマウント;
+:useStateを使用して状態を初期化;
+:useEffectを使用してチケットをAPIから取得;
+:API呼び出し (非同期);
+:データ取得完了;
+if (エラーが発生したか?) then (true)
+  :エラーメッセージを設定;
+else (false)
+  :チケットデータをセット;
+endif
+:ローディング状態を更新;
+
+group イベントハンドラ
+  :onClickイベントを処理 (チケット作成ボタン);
+  if (isCreatingがtrueか?) then (true)
+    :チケット作成フォームを表示;
+    :onChangeイベントを処理 (タイトル);
+    :onChangeイベントを処理 (説明);
+    :onChangeイベントを処理 (優先度);
+    :onClickイベントを処理 (作成ボタン);
+    if (タイトルと説明が入力されているか?) then (true)
+      :API呼び出し (チケット作成) (非同期);
+      :データ取得完了;
+      :新しいチケットをチケットリストに追加;
+      :チケット作成フォームをリセット;
+      :isCreatingをfalseに設定;
+    else (false)
+      :エラーメッセージを設定;
+    endif
+  else (false)
+    :onClickイベントを処理 (キャンセルボタン);
+    :isCreatingをfalseに設定;
+  endif
+
+  while (各チケットに対して)
+    :onClickイベントを処理 (チケット);
+    :handleStatusChangeを呼び出す (ステータス変更);
+    :onDeleteイベントを処理 (削除ボタン);
+    :handleDeleteを呼び出す (チケット削除);
+  endwhile
+
+  :onChangeイベントを処理 (フィルター);
+  :onChangeイベントを処理 (検索);
+end group
+
+:コンポーネントの再レンダリング;
+stop
+@enduml
